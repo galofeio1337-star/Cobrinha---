@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Jogo da Cobrinha</title>
+  <link rel="stylesheet" href="style.css">
   <style>
     body {
       display: flex;
@@ -24,17 +25,22 @@
       padding: 5px 10px;
       font-size: 16px;
     }
+    a {
+      margin: 5px;
+      text-decoration: none;
+      color: blue;
+    }
   </style>
 </head>
 <body>
-  
+  <h1>Pontuação: <span id="score">0</span></h1>
+  <canvas id="game" width="400" height="400"></canvas>
+  <button onclick="resetGame()">🔄 Resetar Jogo</button>
+
   <h2>Escolha o modo:</h2>
   <a href="main.html">Modo Normal</a>
   <a href="battle2-dodge.html">Modo 2</a>
-  <h1>🐍 Snake Game</h1>
-  <canvas id="game" width="400" height="400"></canvas>
-  <div id="score">Pontuação: 0</div>
-  <button onclick="resetGame()">🔄 Resetar Jogo</button>
+
   <script src="script.js"></script>
 </body>
 </html>
