@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Jogo da Cobrinha</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+    }
+    canvas {
+      border: 2px solid black;
+      margin-top: 20px;
+    }
+    #score {
+      font-size: 20px;
+      margin-top: 10px;
+    }
+    button {
+      margin-top: 10px;
+      padding: 5px 10px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  
+  <h2>Escolha o modo:</h2>
+  <a href="main.html">Modo Normal</a>
+  <a href="battle2-dodge.html">Modo 2</a>
+  <h1>🐍 Snake Game</h1>
+  <canvas id="game" width="400" height="400"></canvas>
+  <div id="score">Pontuação: 0</div>
+  <button onclick="resetGame()">🔄 Resetar Jogo</button>
+  <script src="script.js"></script>
+</body>
+</html>
