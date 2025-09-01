@@ -4,6 +4,7 @@ const ctx = canvas.getContext("2d");
 const rows = 20;
 const cols = 20;
 const box = 20;
+//myfunctions-add
 
 let snake = [{ x: 1 * box, y: 1 * box }];
 let food = {
@@ -14,6 +15,8 @@ let food = {
 let direction = null;
 let score = 0;
 let fallingBlocks = [];
+let powerUpActive = false;
+let avisos = [];
 
 // Função para desenhar tudo
 function draw() {
@@ -35,11 +38,20 @@ function draw() {
   // blocos caindo
   drawBlocks();
 
+  //faz vertical vermelho
+  function drawAvisos() {
+    ctx.fillStyle = "rgba(255, 0, 0, 0.3)"; // vermelho transparente
+    for (let a of aviso) {
+      ctx.fillRect(a.x, box, a.width, (rows - 2) * box); 
+      // começa logo abaixo da parede (box), vai até o chão
+    }
+  }
+  
   // cobra
   for (let part of snake) {
-    ctx.fillStyle = "green";
+    ctx.fillStyle = powerUpActive ? "blue" : "green";
     ctx.fillRect(part.x, part.y, box, box);
-    ctx.strokeStyle = "darkgreen";
+    ctx.strokeStyle = powerUpActive ? "darkblue" : "darkgreen";
     ctx.strokeRect(part.x, part.y, box, box);
   }
 }
@@ -61,9 +73,16 @@ function updateBlocks() {
 
     // colisão com cobra
     if (snake.some(part => part.x === fallingBlocks[i].x && part.y === fallingBlocks[i].y)) {
-      clearInterval(game);
-      alert("💀 Game Over! Colidiu com um bloco!");
-      return;
+      if (powerUpActive) {
+        // destrói o bloco em vez de morrer
+        fallingBlocks.splice(i, 1);
+        i--;
+        continue;
+      } else {
+        clearInterval(game);
+        alert("💀 Game Over! Colidiu com um bloco!");
+        return;
+      }
     }
 
     // remove blocos que saíram da tela
@@ -78,11 +97,15 @@ function updateBlocks() {
 function createBlock() {
   const block = {
     x: Math.floor(Math.random() * (cols - 2) + 1) * box,
-    y: box, // começa no topo
+    y: box,
     width: box,
     height: box
   };
   fallingBlocks.push(block);
+  aviso.push({
+    x: block.x,
+    width: block.width
+  })
 }
 
 // Função principal de atualização
@@ -139,9 +162,19 @@ function resetGame() {
   direction = null;
   score = 0;
   fallingBlocks = [];
+  powerUpActive = false;
   document.getElementById("score").textContent = "Pontuação: " + score;
   clearInterval(game);
   game = setInterval(update, 150);
+}
+
+// Ativar poder azul
+function activatePowerUp() {
+  if (powerUpActive) return; // já ativo
+  powerUpActive = true;
+  setTimeout(() => {
+    powerUpActive = false;
+  }, 1000); // dura 1 segundo
 }
 
 // Controle de teclado
@@ -151,6 +184,7 @@ document.addEventListener("keydown", e => {
   if (e.key === "ArrowUp" && direction !== "DOWN") direction = "UP";
   if (e.key === "ArrowDown" && direction !== "UP") direction = "DOWN";
   if (e.key.toLowerCase() === "r") resetGame();
+  if (e.key === " ") activatePowerUp(); // espaço ativa o poder
 });
 
 // inicia blocos caindo a cada 2 segundos
