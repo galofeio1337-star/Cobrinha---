@@ -4,38 +4,56 @@
   <meta charset="UTF-8">
   <title>Snake Mode 2</title>
   <style>
-    canvas { border: 2px solid black; }
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+    }
+    canvas {
+      border: 2px solid black;
+      margin-top: 20px;
+    }
+    #score {
+      font-size: 20px;
+      margin-top: 10px;
+    }
+    #cooldown {
+      font-size: 18px;
+      margin-top: 5px;
+      color: blue;
+    }
+    #cooldown-container {
+      width: 200px;
+      height: 20px;
+      border: 2px solid #000;
+      margin-top: 5px;
+      background-color: #ddd;
+    }
+    #cooldown-bar {
+      height: 100%;
+      width: 100%;
+      background-color: blue;
+      transition: width 1s linear;
+    }
+    button {
+      margin-top: 10px;
+      padding: 5px 10px;
+      font-size: 16px;
+    }
   </style>
-<style>
-  body {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
-  }
-  canvas {
-    border: 2px solid black;
-    margin-top: 20px;
-  }
-  #score {
-    font-size: 20px;
-    margin-top: 10px;
-  }
-  button {
-    margin-top: 10px;
-    padding: 5px 10px;
-    font-size: 16px;
-  }
-</style>
 </head>
 <body>
   <h2>MENU---</h2>
   <a href="main.html">Modo Normal</a>
   <h1>🐍 Snake - Modo 2</h1>
   <canvas id="game" width="400" height="400"></canvas>
-  <script src="modo2-funcoes.js"></script>
   
   <h1>Pontuação: <span id="score">0</span></h1>  
+  <div id="cooldown">Cooldown: pronto</div>
+  <div id="cooldown-container"><div id="cooldown-bar"></div></div>
+
+  <script src="modo2-funcoes.js"></script>
 </body>
 </html>
