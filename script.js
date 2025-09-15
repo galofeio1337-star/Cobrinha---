@@ -15,30 +15,67 @@ let exp = 0;
 let expToNext = 3;
 let maxLevel = 10;
 
-// 🎨 Atualiza fundo e cor do texto
+// 🎨 Atualiza fundo e cor do texto - CORREÇÃO: Apenas a área do jogo muda de cor
 function updateBackground() {
   let shade = Math.max(0, 255 - score * 20);
-  document.body.style.backgroundColor = `rgb(${shade}, ${shade}, ${shade})`;
-
+  document.querySelector(".game-container").style.backgroundColor = `rgb(${shade}, ${shade}, ${shade})`;
+  
   // texto alterna entre preto e branco conforme fundo
   let textColor = shade < 128 ? "white" : "black";
   document.getElementById("score").style.color = textColor;
   document.getElementById("level").style.color = textColor;
 }
 
-// 🍏 Gera comida em posição livre e diferente da cobra
+// 🍏 Gera comida em posição livre e diferente da cobra - CORREÇÃO: Lógica melhorada
 function spawnFood() {
-  let valid = false;
+  let validPosition = false;
   let newFood;
+  let attempts = 0;
+  const maxAttempts = 100; // Prevenir loop infinito
 
-  while (!valid) {
+  while (!validPosition && attempts < maxAttempts) {
+    attempts++;
     newFood = {
       x: Math.floor(Math.random() * (cols - 2) + 1) * box,
       y: Math.floor(Math.random() * (rows - 2) + 1) * box
     };
 
-    // só aceita se não for em cima da cobra
-    valid = !snake.some(part => part.x === newFood.x && part.y === newFood.y);
+    // Verifica se a posição não está ocupada pela cobra
+    validPosition = true;
+    for (let part of snake) {
+      if (part.x === newFood.x && part.y === newFood.y) {
+        validPosition = false;
+        break;
+      }
+    }
+    
+    // Verifica também se não está nas paredes
+    if (newFood.x <= 0 || newFood.y <= 0 || 
+        newFood.x >= (cols-1)*box || newFood.y >= (rows-1)*box) {
+      validPosition = false;
+    }
+  }
+
+  // Se não encontrou posição válida, usa fallback
+  if (!validPosition) {
+    // Procura uma posição válida de forma sistemática
+    for (let y = 1; y < rows-1; y++) {
+      for (let x = 1; x < cols-1; x++) {
+        let candidate = {x: x * box, y: y * box};
+        let positionFree = true;
+        
+        for (let part of snake) {
+          if (part.x === candidate.x && part.y === candidate.y) {
+            positionFree = false;
+            break;
+          }
+        }
+        
+        if (positionFree) {
+          return candidate;
+        }
+      }
+    }
   }
 
   return newFood;
@@ -46,10 +83,11 @@ function spawnFood() {
 
 // 🖼️ Desenha cenário
 function draw() {
-  ctx.clearRect(0, 0, cols * box, rows * box);
+  // Limpa apenas a área jogável, não as paredes
+  ctx.clearRect(box, box, (cols-2)*box, (rows-2)*box);
 
   // paredes
-  ctx.fillStyle = "#000";
+  ctx.fillStyle = "#333";
   ctx.fillRect(0, 0, cols * box, box);
   ctx.fillRect(0, (rows - 1) * box, cols * box, box);
   ctx.fillRect(0, 0, box, rows * box);
@@ -84,7 +122,7 @@ function update() {
 
   // 🚫 colisão
   if (
-    snakeX <= 0 || snakeY <= 0 ||
+    snakeX < box || snakeY < box ||
     snakeX >= (cols - 1) * box || snakeY >= (rows - 1) * box ||
     snake.some(part => part.x === newHead.x && part.y === newHead.y)
   ) {
@@ -105,6 +143,7 @@ function update() {
     if (exp >= expToNext) {
       exp = 0;
       level++;
+      expToNext = Math.floor(expToNext * 1.5); // Aumenta a exp necessária
       document.getElementById("level").textContent = "Nível: " + level;
       document.getElementById("exp-bar").style.width = "0%";
 
@@ -118,7 +157,7 @@ function update() {
       document.getElementById("exp-bar").style.width = percent + "%";
     }
 
-    food = spawnFood(); // ✅ novo spawn garantido
+    food = spawnFood();
   } else {
     snake.pop();
   }
@@ -128,7 +167,9 @@ function update() {
 
 // 🔁 Resetar
 function resetGame() {
-  document.body.style.backgroundColor = "rgb(255,255,255)";
+  document.querySelector(".game-container").style.backgroundColor = "white";
+  document.getElementById("score").style.color = "black";
+  document.getElementById("level").style.color = "black";
 
   snake = [{ x: 1 * box, y: 1 * box }];
   food = spawnFood();
@@ -136,6 +177,7 @@ function resetGame() {
   score = 0;
   level = 1;
   exp = 0;
+  expToNext = 3;
 
   document.getElementById("score").textContent = "Pontuação: " + score;
   document.getElementById("level").textContent = "Nível: " + level;
@@ -143,6 +185,7 @@ function resetGame() {
 
   clearInterval(game);
   game = setInterval(update, 150);
+  draw();
 }
 
 // 🎮 Controles
@@ -157,3 +200,4 @@ document.addEventListener("keydown", e => {
 // ▶️ Início
 let game = setInterval(update, 150);
 draw();
+updateBackground();
