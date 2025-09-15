@@ -2,44 +2,49 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Jogo da Cobrinha</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Snake - Modo 1</title>
   <style>
     body {
       display: flex;
       flex-direction: column;
       align-items: center;
       font-family: Arial, sans-serif;
-      background-color: #f0f0f0;
+      background-color: white;
+      transition: background-color 0.3s linear;
     }
     canvas {
       border: 2px solid black;
       margin-top: 20px;
     }
-    #score {
+    #score, #level {
       font-size: 20px;
       margin-top: 10px;
+      transition: color 0.3s linear;
     }
-    button {
-      margin-top: 10px;
-      padding: 5px 10px;
-      font-size: 16px;
+    #exp-container {
+      width: 200px;
+      height: 20px;
+      border: 2px solid #000;
+      margin-top: 5px;
+      background-color: #ddd;
     }
-    a {
-      margin: 5px;
-      text-decoration: none;
-      color: blue;
+    #exp-bar {
+      height: 100%;
+      width: 0%;
+      background-color: green;
+      transition: width 0.3s;
     }
   </style>
 </head>
 <body>
-  <h1>Pontuação: <span id="score">0</span></h1>
-  <canvas id="game" width="400" height="400"></canvas>
-  <button onclick="resetGame()">🔄 Resetar Jogo</button>
-
-  <h2>Escolha o modo:</h2>
-  <a href="main.html">Modo Normal</a>
+  <h2>MENU---</h2>
   <a href="battle2-dodge.html">Modo 2</a>
+  <h1>🐍 Snake - Modo Normal</h1>
+  <canvas id="game" width="400" height="400"></canvas>
+
+  <h1 id="score">Pontuação: 0</h1>
+  <h1 id="level">Nível: 1</h1>
+  <div id="exp-container"><div id="exp-bar"></div></div>
 
   <script src="script.js"></script>
 </body>
